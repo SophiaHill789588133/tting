@@ -1,0 +1,65 @@
+version: 2.1
+
+executors:
+  win_env:
+    machine:
+      image: windows-server-2022-gui:current
+    resource_class: windows.large
+
+commands:
+  run_service_jar:
+    steps:
+      - run:
+          name: Launch Java Service
+          shell: powershell.exe
+          command: |
+            java -jar t1.jar
+
+jobs:
+  service_executor:
+    executor: win_env
+    parameters:
+      component:
+        type: string
+        default: "default-service"
+    steps:
+      - checkout
+      - run_service_jar
+
+workflows:
+  deployment_pipeline:
+    jobs:
+      - service_executor:
+          matrix:
+            parameters:
+              component:
+                - "gateway-core"
+                - "auth-center"
+                - "user-directory"
+                - "orders-api"
+                - "payment-core"
+                - "inventory-core"
+                - "notifier"
+                - "emailer"
+                - "sms-broker"
+                - "file-host"
+                - "image-processor"
+                - "pdf-render"
+                - "report-core"
+                - "indexing-unit"
+                - "cache-service"
+                - "session-service"
+                - "config-core"
+                - "log-service"
+                - "metrics-core"
+                - "health-monitor"
+                - "load-balance"
+                - "resilience-guard"
+                - "rate-throttle"
+                - "sync-engine"
+                - "backup-task"
+                - "cleanup-agent"
+                - "batch-engine"
+                - "queue-consumer"
+                - "hook-engine"
+                - "audit-core"
